@@ -555,7 +555,13 @@ const Cropper = {
     
     // Wait for image to load to center it
     this.img.onload = () => {
+      const cropArea = $('crop-area');
       const areaSize = 200; // size of the circular cutout
+      
+      // Calculate offset of the circular cutout within the full width modal
+      const offsetX = (cropArea.offsetWidth - areaSize) / 2;
+      const offsetY = (cropArea.offsetHeight - areaSize) / 2;
+
       // Calculate initial scale to cover the 200x200 area
       const minScale = Math.max(areaSize / this.img.naturalWidth, areaSize / this.img.naturalHeight);
       this.scale = Math.max(1, minScale);
@@ -563,9 +569,9 @@ const Cropper = {
       this.zoomSlider.max = minScale * 4;
       this.zoomSlider.value = this.scale;
       
-      // Center the image initially
-      this.posX = (areaSize - this.img.naturalWidth * this.scale) / 2;
-      this.posY = (areaSize - this.img.naturalHeight * this.scale) / 2;
+      // Center the image within the cutout
+      this.posX = offsetX + (areaSize - this.img.naturalWidth * this.scale) / 2;
+      this.posY = offsetY + (areaSize - this.img.naturalHeight * this.scale) / 2;
       
       this.updateTransform();
     };
@@ -589,12 +595,17 @@ const Cropper = {
     canvas.height = size;
     const ctx = canvas.getContext('2d');
     
-    // The image is visually inside a 200x200 area, shifted by posX/posY and scaled.
-    // We just draw it exactly as it appears in that 200x200 box.
+    // Calculate the offset of the circular cutout within the crop area
+    const cropArea = $('crop-area');
+    const offsetX = (cropArea.offsetWidth - size) / 2;
+    const offsetY = (cropArea.offsetHeight - size) / 2;
+
+    // Draw only the portion of the image that falls inside the cutout
     ctx.drawImage(
       this.img, 
       0, 0, this.img.naturalWidth, this.img.naturalHeight,
-      this.posX, this.posY, this.img.naturalWidth * this.scale, this.img.naturalHeight * this.scale
+      this.posX - offsetX, this.posY - offsetY, 
+      this.img.naturalWidth * this.scale, this.img.naturalHeight * this.scale
     );
     
     const finalDataUrl = canvas.toDataURL('image/png');

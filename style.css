@@ -231,14 +231,14 @@ html, body {
 /* Other person bubble */
 .msg-row.other .msg-bubble {
   background: var(--bubble-other);
-  color: #222;
+  color: #000;
   border-top-left-radius: 4px;
 }
 
 /* Self bubble */
 .msg-row.self .msg-bubble {
   background: var(--bubble-self);
-  color: #fff;
+  color: #111;
   border-top-right-radius: 4px;
 }
 
