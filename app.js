@@ -26,8 +26,8 @@ const state = {
   messages: [],
   currentSender: 'a',   // 'a' = self (right), 'b' = other (left)
   msgTime: '12:00',
-  bgTop: '#87CEEB',
-  bgBottom: '#dff0fd',
+  bgTop: '#7A9DCB',
+  bgBottom: '#7A9DCB',
 };
 
 // ===== DOM references =====
@@ -821,8 +821,8 @@ function initEvents() {
   });
 
   DOM.resetBgBtn.addEventListener('click', () => {
-    state.bgTop    = '#87CEEB';
-    state.bgBottom = '#dff0fd';
+    state.bgTop    = '#7A9DCB';
+    state.bgBottom = '#7A9DCB';
     DOM.bgColorTop.value    = state.bgTop;
     DOM.bgColorBottom.value = state.bgBottom;
     applyBackground();

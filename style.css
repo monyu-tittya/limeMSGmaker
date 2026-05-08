@@ -6,14 +6,14 @@
 }
 
 :root {
-  --bubble-self: #6ECB63;
-  --bubble-self-dark: #5bb552;
+  --bubble-self: #85E74C;
+  --bubble-self-dark: #75CC43;
   --bubble-other: #ffffff;
-  --header-bg: #3f4043;
+  --header-bg: #282828;
   --header-height: 56px;
   --input-bar-height: 64px;
-  --sky-top: #87CEEB;
-  --sky-bottom: #dff0fd;
+  --sky-top: #7A9DCB;
+  --sky-bottom: #7A9DCB;
   --font-main: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
   --radius-bubble: 18px;
   --shadow-soft: 0 2px 8px rgba(0,0,0,0.12);
