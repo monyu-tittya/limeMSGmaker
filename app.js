@@ -120,11 +120,10 @@ function makeTextAvatarEl(char, color, sizePx = 36) {
 /**
  * Build an <img> element from a base64 data URL.
  */
-function makeImgEl(dataUrl, x = 50, y = 50) {
+function makeImgEl(dataUrl) {
   const img = document.createElement('img');
   img.src = dataUrl;
   img.alt = 'アイコン';
-  img.style.objectPosition = `${x}% ${y}%`;
   return img;
 }
 
@@ -138,7 +137,7 @@ function renderIconInto(personKey, container, sizePx = 36) {
   const p = state.persons[personKey];
   container.innerHTML = '';
   if (p.iconMode === 'image' && p.iconImage) {
-    container.appendChild(makeImgEl(p.iconImage, p.iconImageX, p.iconImageY));
+    container.appendChild(makeImgEl(p.iconImage));
   } else {
     container.appendChild(makeTextAvatarEl(p.iconChar || '?', p.iconColor, sizePx));
   }
@@ -157,7 +156,7 @@ function renderSenderToggle() {
   DOM.senderToggle.innerHTML = '';
   const p = state.persons[personKey];
   if (p.iconMode === 'image' && p.iconImage) {
-    const img = makeImgEl(p.iconImage, p.iconImageX, p.iconImageY);
+    const img = makeImgEl(p.iconImage);
     img.style.borderRadius = '50%';
     DOM.senderToggle.appendChild(img);
   } else {
@@ -176,14 +175,12 @@ function renderSettingsPreview(personKey) {
 
   container.innerHTML = '';
   if (p.iconMode === 'image' && p.iconImage) {
-    const img = makeImgEl(p.iconImage, p.iconImageX, p.iconImageY);
+    const img = makeImgEl(p.iconImage);
     container.appendChild(img);
-    $(`img-pos-${personKey}`).style.display = 'flex';
   } else {
     const ta = makeTextAvatarEl(p.iconChar || '?', p.iconColor, 52);
     ta.style.fontSize = '22px';
     container.appendChild(ta);
-    $(`img-pos-${personKey}`).style.display = 'none';
   }
 }
 
@@ -485,23 +482,149 @@ function switchIconMode(personKey, mode) {
   rerenderAllMessages();
 }
 
+// ===== Image Cropper UI =====
+const Cropper = {
+  modal: $('crop-modal'),
+  img: $('crop-img'),
+  zoomSlider: $('crop-zoom'),
+  cancelBtn: $('crop-cancel'),
+  applyBtn: $('crop-apply'),
+  
+  targetPersonKey: null,
+  scale: 1,
+  posX: 0,
+  posY: 0,
+  isDragging: false,
+  startX: 0,
+  startY: 0,
+  initialPosX: 0,
+  initialPosY: 0,
+  
+  init() {
+    this.zoomSlider.addEventListener('input', (e) => {
+      this.scale = parseFloat(e.target.value);
+      this.updateTransform();
+    });
+
+    const startDrag = (e) => {
+      e.preventDefault();
+      this.isDragging = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      this.startX = clientX;
+      this.startY = clientY;
+      this.initialPosX = this.posX;
+      this.initialPosY = this.posY;
+    };
+
+    const doDrag = (e) => {
+      if (!this.isDragging) return;
+      e.preventDefault();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const dx = clientX - this.startX;
+      const dy = clientY - this.startY;
+      this.posX = this.initialPosX + dx;
+      this.posY = this.initialPosY + dy;
+      this.updateTransform();
+    };
+
+    const endDrag = () => {
+      this.isDragging = false;
+    };
+
+    this.img.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', doDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    this.img.addEventListener('touchstart', startDrag, {passive: false});
+    window.addEventListener('touchmove', doDrag, {passive: false});
+    window.addEventListener('touchend', endDrag);
+
+    this.cancelBtn.addEventListener('click', () => this.close());
+    this.applyBtn.addEventListener('click', () => this.applyCrop());
+  },
+
+  open(personKey, dataUrl) {
+    this.targetPersonKey = personKey;
+    this.img.src = dataUrl;
+    this.scale = 1;
+    this.posX = 0;
+    this.posY = 0;
+    this.zoomSlider.value = 1;
+    
+    // Wait for image to load to center it
+    this.img.onload = () => {
+      const areaSize = 200; // size of the circular cutout
+      // Calculate initial scale to cover the 200x200 area
+      const minScale = Math.max(areaSize / this.img.naturalWidth, areaSize / this.img.naturalHeight);
+      this.scale = Math.max(1, minScale);
+      this.zoomSlider.min = minScale * 0.5;
+      this.zoomSlider.max = minScale * 4;
+      this.zoomSlider.value = this.scale;
+      
+      // Center the image initially
+      this.posX = (areaSize - this.img.naturalWidth * this.scale) / 2;
+      this.posY = (areaSize - this.img.naturalHeight * this.scale) / 2;
+      
+      this.updateTransform();
+    };
+    
+    this.modal.classList.add('open');
+  },
+
+  close() {
+    this.modal.classList.remove('open');
+    this.img.src = '';
+  },
+
+  updateTransform() {
+    this.img.style.transform = `translate(${this.posX}px, ${this.posY}px) scale(${this.scale})`;
+  },
+
+  applyCrop() {
+    const canvas = document.createElement('canvas');
+    const size = 200; // Output square size
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    
+    // The image is visually inside a 200x200 area, shifted by posX/posY and scaled.
+    // We just draw it exactly as it appears in that 200x200 box.
+    ctx.drawImage(
+      this.img, 
+      0, 0, this.img.naturalWidth, this.img.naturalHeight,
+      this.posX, this.posY, this.img.naturalWidth * this.scale, this.img.naturalHeight * this.scale
+    );
+    
+    const finalDataUrl = canvas.toDataURL('image/png');
+    
+    // Save to state
+    const pKey = this.targetPersonKey;
+    state.persons[pKey].iconImage = finalDataUrl;
+    
+    renderSettingsPreview(pKey);
+    if (pKey === 'a') renderSenderToggle();
+    if (pKey === 'b') renderHeader();
+    rerenderAllMessages();
+    saveState();
+    
+    this.close();
+  }
+};
+
+// Initialize cropper
+Cropper.init();
+
 // ===== Image upload (FileReader) =====
 function handleImageUpload(personKey, file) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
-    state.persons[personKey].iconImage = e.target.result;
-    // reset position
-    state.persons[personKey].iconImageX = 50;
-    state.persons[personKey].iconImageY = 50;
-    $(`pos-x-${personKey}`).value = 50;
-    $(`pos-y-${personKey}`).value = 50;
-
-    renderSettingsPreview(personKey);
-    renderHeader();
-    renderSenderToggle();
-    rerenderAllMessages();
-    saveState();
+    // Open cropper instead of saving directly
+    Cropper.open(personKey, e.target.result);
+    // Reset file input so same file can be uploaded again if needed
+    $(`img-upload-${personKey}`).value = '';
   };
   reader.readAsDataURL(file);
 }
@@ -814,20 +937,6 @@ function initEvents() {
     saveState();
   });
 
-  // --- Image position sliders ---
-  const updatePos = (personKey, axis, val) => {
-    state.persons[personKey][`iconImage${axis.toUpperCase()}`] = parseInt(val, 10);
-    renderSettingsPreview(personKey);
-    if (personKey === 'a') renderSenderToggle();
-    if (personKey === 'b') renderHeader();
-    rerenderAllMessages();
-    saveState();
-  };
-
-  $('pos-x-a').addEventListener('input', (e) => updatePos('a', 'x', e.target.value));
-  $('pos-y-a').addEventListener('input', (e) => updatePos('a', 'y', e.target.value));
-  $('pos-x-b').addEventListener('input', (e) => updatePos('b', 'x', e.target.value));
-  $('pos-y-b').addEventListener('input', (e) => updatePos('b', 'y', e.target.value));
 
   // --- Time input ---
   DOM.msgTimeInput.addEventListener('change', () => {

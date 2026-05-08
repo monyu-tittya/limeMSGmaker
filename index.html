@@ -129,16 +129,6 @@
                   </label>
                   <button class="img-clear-btn" id="img-clear-a">✕ 画像を削除</button>
                 </div>
-                <div class="img-pos-controls" id="img-pos-a" style="display:none;">
-                  <div class="pos-row">
-                    <span>左右</span>
-                    <input type="range" id="pos-x-a" min="0" max="100" value="50">
-                  </div>
-                  <div class="pos-row">
-                    <span>上下</span>
-                    <input type="range" id="pos-y-a" min="0" max="100" value="50">
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -183,16 +173,6 @@
                     <input type="file" id="img-upload-b" accept="image/*">
                   </label>
                   <button class="img-clear-btn" id="img-clear-b">✕ 画像を削除</button>
-                </div>
-                <div class="img-pos-controls" id="img-pos-b" style="display:none;">
-                  <div class="pos-row">
-                    <span>左右</span>
-                    <input type="range" id="pos-x-b" min="0" max="100" value="50">
-                  </div>
-                  <div class="pos-row">
-                    <span>上下</span>
-                    <input type="range" id="pos-y-b" min="0" max="100" value="50">
-                  </div>
                 </div>
               </div>
             </div>
@@ -248,6 +228,26 @@
   <div id="toast" role="alert" aria-live="polite"></div>
 
 </div><!-- /app -->
+
+<!-- ====== Image Cropper Modal ====== -->
+<div id="crop-modal">
+  <div class="crop-modal-content">
+    <div class="crop-header">アイコンの調整</div>
+    <div class="crop-area" id="crop-area">
+      <img id="crop-img" src="" alt="crop">
+      <div class="crop-overlay"></div>
+    </div>
+    <div class="crop-controls">
+      <span class="crop-icon">🔍-</span>
+      <input type="range" id="crop-zoom" min="0.5" max="3" step="0.01" value="1">
+      <span class="crop-icon">🔍+</span>
+    </div>
+    <div class="crop-actions">
+      <button class="crop-btn cancel" id="crop-cancel">キャンセル</button>
+      <button class="crop-btn apply" id="crop-apply">適用</button>
+    </div>
+  </div>
+</div>
 
 <!-- html2canvas CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
