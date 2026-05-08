@@ -1,258 +1,257 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#3f4043">
-  <meta name="description" content="LINE風メッセージ画像を生成してPNGで保存・Xに投稿できるWebアプリ">
-  <title>LimeMSG Maker - LINE風メッセージ画像ジェネレーター</title>
+  <meta name="description" content="LI◯E風メッセージ画像を生成してPNGで保存・Xに投稿できるWebアプリ">
+  <title>LimeMSG Maker</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div id="app">
+  <div id="app">
 
-  <!-- ====== Header ====== -->
-  <header id="chat-header">
-    <div id="header-icon" title="相手のアイコン">
-      <!-- JS で描画 -->
-    </div>
-    <span id="header-name">相手の名前</span>
-    <button class="header-btn" id="clear-btn" title="会話をクリア">🗑️</button>
-    <button class="header-btn" id="settings-btn" title="設定" aria-label="設定を開く">⚙️</button>
-  </header>
-
-  <!-- ====== Chat Area ====== -->
-  <main id="chat-bg">
-
-    <div id="message-list" role="list" aria-label="メッセージ一覧">
-      <div id="empty-hint">
-        <div class="hint-icon">💬</div>
-        <p>下の入力欄からメッセージを追加しましょう</p>
+    <!-- ====== Header ====== -->
+    <header id="chat-header">
+      <div id="header-icon" title="相手のアイコン">
+        <!-- JS で描画 -->
       </div>
-    </div>
-  </main>
+      <span id="header-name">相手の名前</span>
+      <button class="header-btn" id="clear-btn" title="会話をクリア">🗑️</button>
+      <button class="header-btn" id="settings-btn" title="設定" aria-label="設定を開く">⚙️</button>
+    </header>
 
-  <!-- ====== Input Bar ====== -->
-  <div id="input-bar">
-    <button id="sender-toggle" title="送信者を切り替え" aria-label="送信者切り替え">
-      <!-- JS で描画 -->
-    </button>
-    <div style="position:relative;flex-shrink:0;">
-      <button class="input-extra-btn" id="call-menu-btn" title="通話メニュー" aria-label="通話メニュー">📞</button>
-      <div id="call-submenu">
-        <button class="call-submenu-item" id="show-call-screen-btn">
-          <span class="submenu-icon">📲</span> 着信画面を表示
-        </button>
-        <button class="call-submenu-item" id="insert-missed-call-btn">
-          <span class="submenu-icon">📵</span> 不在着信
-        </button>
-        <button class="call-submenu-item" id="insert-voice-call-btn">
-          <span class="submenu-icon">☎️</span> 音声通話
-        </button>
+    <!-- ====== Chat Area ====== -->
+    <main id="chat-bg">
+
+      <div id="message-list" role="list" aria-label="メッセージ一覧">
+        <div id="empty-hint">
+          <div class="hint-icon">💬</div>
+          <p>下の入力欄からメッセージを追加しましょう</p>
+        </div>
       </div>
-    </div>
-    <button class="input-extra-btn" id="img-msg-btn" title="画像を送信" aria-label="画像を送信">🖼️</button>
-    <input type="file" id="chat-img-input" accept="image/*">
-    <textarea
-      id="msg-input"
-      placeholder="メッセージを入力…"
-      rows="1"
-      aria-label="メッセージ入力"
-      maxlength="500"
-    ></textarea>
-    <button id="send-btn" title="送信" aria-label="送信">
-      ➤
-    </button>
-  </div>
+    </main>
 
-  <!-- ====== Action Bar ====== -->
-  <div id="action-bar">
-    <button class="action-btn" id="save-png-btn" title="PNG画像として保存">
-      📸 PNG保存
-    </button>
-    <button class="action-btn" id="post-x-btn" title="Xに投稿">
-      𝕏 Xに投稿
-    </button>
-  </div>
-
-  <!-- ====== Settings Overlay ====== -->
-  <div id="settings-overlay" role="dialog" aria-modal="true" aria-label="設定">
-    <div id="settings-panel">
-      <div id="settings-header">
-        <h2>⚙️ 設定</h2>
-        <button id="settings-close" aria-label="設定を閉じる">✕</button>
+    <!-- ====== Input Bar ====== -->
+    <div id="input-bar">
+      <button id="sender-toggle" title="送信者を切り替え" aria-label="送信者切り替え">
+        <!-- JS で描画 -->
+      </button>
+      <div style="position:relative;flex-shrink:0;">
+        <button class="input-extra-btn" id="call-menu-btn" title="通話メニュー" aria-label="通話メニュー">📞</button>
+        <div id="call-submenu">
+          <button class="call-submenu-item" id="show-call-screen-btn">
+            <span class="submenu-icon">📲</span> 着信画面を表示
+          </button>
+          <button class="call-submenu-item" id="insert-missed-call-btn">
+            <span class="submenu-icon">📵</span> 不在着信
+          </button>
+          <button class="call-submenu-item" id="insert-voice-call-btn">
+            <span class="submenu-icon">☎️</span> 音声通話
+          </button>
+        </div>
       </div>
-      <div id="settings-body">
+      <button class="input-extra-btn" id="img-msg-btn" title="画像を送信" aria-label="画像を送信">🖼️</button>
+      <input type="file" id="chat-img-input" accept="image/*">
+      <textarea id="msg-input" placeholder="メッセージを入力…" rows="1" aria-label="メッセージ入力" maxlength="500"></textarea>
+      <button id="send-btn" title="送信" aria-label="送信">
+        ➤
+      </button>
+    </div>
 
-        <!-- Person A (Self) -->
-        <section class="settings-section">
-          <div class="settings-section-title">👤 自分 (右の吹き出し)</div>
+    <!-- ====== Action Bar ====== -->
+    <div id="action-bar">
+      <button class="action-btn" id="save-png-btn" title="PNG画像として保存">
+        📸 PNG保存
+      </button>
+      <button class="action-btn" id="post-x-btn" title="Xに投稿">
+        𝕏 Xに投稿
+      </button>
+    </div>
 
-          <!-- Name -->
-          <div class="settings-row">
-            <label class="settings-label" for="name-a">名前</label>
-            <input type="text" id="name-a" placeholder="名前を入力" maxlength="20" autocomplete="off">
-          </div>
+    <!-- ====== Settings Overlay ====== -->
+    <div id="settings-overlay" role="dialog" aria-modal="true" aria-label="設定">
+      <div id="settings-panel">
+        <div id="settings-header">
+          <h2>⚙️ 設定</h2>
+          <button id="settings-close" aria-label="設定を閉じる">✕</button>
+        </div>
+        <div id="settings-body">
 
-          <!-- Icon -->
-          <div class="settings-row">
-            <div class="settings-label">アイコン</div>
-            <div class="icon-mode-tabs">
-              <button class="icon-mode-tab active" data-person="a" data-mode="text">文字</button>
-              <button class="icon-mode-tab" data-person="a" data-mode="image">画像</button>
+          <!-- Person A (Self) -->
+          <section class="settings-section">
+            <div class="settings-section-title">👤 自分 (右の吹き出し)</div>
+
+            <!-- Name -->
+            <div class="settings-row">
+              <label class="settings-label" for="name-a">名前</label>
+              <input type="text" id="name-a" placeholder="名前を入力" maxlength="20" autocomplete="off">
             </div>
-            <div class="icon-preview-wrap">
-              <div class="icon-preview" id="preview-a">
-                <div class="text-avatar" id="preview-a-inner" style="background:#4a90d9;font-size:22px;">A</div>
+
+            <!-- Icon -->
+            <div class="settings-row">
+              <div class="settings-label">アイコン</div>
+              <div class="icon-mode-tabs">
+                <button class="icon-mode-tab active" data-person="a" data-mode="text">文字</button>
+                <button class="icon-mode-tab" data-person="a" data-mode="image">画像</button>
               </div>
-              <!-- Text mode controls -->
-              <div class="icon-controls" id="text-controls-a">
-                <div class="text-icon-controls">
-                  <div class="text-icon-row">
-                    <input type="text" class="icon-char-input" id="icon-char-a" value="A" maxlength="2" placeholder="文字">
-                    <span class="icon-color-label">背景色</span>
-                    <input type="color" class="icon-color-input" id="icon-color-a" value="#4a90d9">
+              <div class="icon-preview-wrap">
+                <div class="icon-preview" id="preview-a">
+                  <div class="text-avatar" id="preview-a-inner" style="background:#4a90d9;font-size:22px;">A</div>
+                </div>
+                <!-- Text mode controls -->
+                <div class="icon-controls" id="text-controls-a">
+                  <div class="text-icon-controls">
+                    <div class="text-icon-row">
+                      <input type="text" class="icon-char-input" id="icon-char-a" value="A" maxlength="2"
+                        placeholder="文字">
+                      <span class="icon-color-label">背景色</span>
+                      <input type="color" class="icon-color-input" id="icon-color-a" value="#4a90d9">
+                    </div>
+                  </div>
+                </div>
+                <!-- Image mode controls -->
+                <div class="icon-controls" id="img-controls-a" style="display:none;">
+                  <div class="img-upload-area">
+                    <label class="img-upload-btn">
+                      📂 画像を選択
+                      <input type="file" id="img-upload-a" accept="image/*">
+                    </label>
+                    <button class="img-clear-btn" id="img-clear-a">✕ 画像を削除</button>
                   </div>
                 </div>
               </div>
-              <!-- Image mode controls -->
-              <div class="icon-controls" id="img-controls-a" style="display:none;">
-                <div class="img-upload-area">
-                  <label class="img-upload-btn">
-                    📂 画像を選択
-                    <input type="file" id="img-upload-a" accept="image/*">
-                  </label>
-                  <button class="img-clear-btn" id="img-clear-a">✕ 画像を削除</button>
+            </div>
+          </section>
+
+          <!-- Person B (Other) -->
+          <section class="settings-section">
+            <div class="settings-section-title">👤 相手 (左の吹き出し)</div>
+
+            <!-- Name -->
+            <div class="settings-row">
+              <label class="settings-label" for="name-b">名前</label>
+              <input type="text" id="name-b" placeholder="名前を入力" maxlength="20" autocomplete="off">
+            </div>
+
+            <!-- Icon -->
+            <div class="settings-row">
+              <div class="settings-label">アイコン</div>
+              <div class="icon-mode-tabs">
+                <button class="icon-mode-tab active" data-person="b" data-mode="text">文字</button>
+                <button class="icon-mode-tab" data-person="b" data-mode="image">画像</button>
+              </div>
+              <div class="icon-preview-wrap">
+                <div class="icon-preview" id="preview-b">
+                  <div class="text-avatar" id="preview-b-inner" style="background:#e05c8a;font-size:22px;">B</div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Person B (Other) -->
-        <section class="settings-section">
-          <div class="settings-section-title">👤 相手 (左の吹き出し)</div>
-
-          <!-- Name -->
-          <div class="settings-row">
-            <label class="settings-label" for="name-b">名前</label>
-            <input type="text" id="name-b" placeholder="名前を入力" maxlength="20" autocomplete="off">
-          </div>
-
-          <!-- Icon -->
-          <div class="settings-row">
-            <div class="settings-label">アイコン</div>
-            <div class="icon-mode-tabs">
-              <button class="icon-mode-tab active" data-person="b" data-mode="text">文字</button>
-              <button class="icon-mode-tab" data-person="b" data-mode="image">画像</button>
-            </div>
-            <div class="icon-preview-wrap">
-              <div class="icon-preview" id="preview-b">
-                <div class="text-avatar" id="preview-b-inner" style="background:#e05c8a;font-size:22px;">B</div>
-              </div>
-              <!-- Text mode controls -->
-              <div class="icon-controls" id="text-controls-b">
-                <div class="text-icon-controls">
-                  <div class="text-icon-row">
-                    <input type="text" class="icon-char-input" id="icon-char-b" value="B" maxlength="2" placeholder="文字">
-                    <span class="icon-color-label">背景色</span>
-                    <input type="color" class="icon-color-input" id="icon-color-b" value="#e05c8a">
+                <!-- Text mode controls -->
+                <div class="icon-controls" id="text-controls-b">
+                  <div class="text-icon-controls">
+                    <div class="text-icon-row">
+                      <input type="text" class="icon-char-input" id="icon-char-b" value="B" maxlength="2"
+                        placeholder="文字">
+                      <span class="icon-color-label">背景色</span>
+                      <input type="color" class="icon-color-input" id="icon-color-b" value="#e05c8a">
+                    </div>
+                  </div>
+                </div>
+                <!-- Image mode controls -->
+                <div class="icon-controls" id="img-controls-b" style="display:none;">
+                  <div class="img-upload-area">
+                    <label class="img-upload-btn">
+                      📂 画像を選択
+                      <input type="file" id="img-upload-b" accept="image/*">
+                    </label>
+                    <button class="img-clear-btn" id="img-clear-b">✕ 画像を削除</button>
                   </div>
                 </div>
               </div>
-              <!-- Image mode controls -->
-              <div class="icon-controls" id="img-controls-b" style="display:none;">
-                <div class="img-upload-area">
-                  <label class="img-upload-btn">
-                    📂 画像を選択
-                    <input type="file" id="img-upload-b" accept="image/*">
-                  </label>
-                  <button class="img-clear-btn" id="img-clear-b">✕ 画像を削除</button>
-                </div>
+            </div>
+          </section>
+
+          <!-- Display Settings -->
+          <section class="settings-section">
+            <div class="settings-section-title">🎨 表示設定</div>
+
+            <div class="settings-row">
+              <label class="settings-label" for="msg-time-input">メッセージ時刻</label>
+              <input type="time" id="msg-time-input" value="12:00">
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">背景色</div>
+              <div class="color-row">
+                <input type="color" id="bg-color-top" value="#87CEEB" title="空の色（上）">
+                <label for="bg-color-top">上</label>
+                <input type="color" id="bg-color-bottom" value="#dff0fd" title="空の色（下）">
+                <label for="bg-color-bottom">下</label>
+                <button class="reset-btn" id="reset-bg-btn">リセット</button>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <!-- Display Settings -->
-        <section class="settings-section">
-          <div class="settings-section-title">🎨 表示設定</div>
+        </div><!-- /settings-body -->
+      </div><!-- /settings-panel -->
+    </div><!-- /settings-overlay -->
 
-          <div class="settings-row">
-            <label class="settings-label" for="msg-time-input">メッセージ時刻</label>
-            <input type="time" id="msg-time-input" value="12:00">
-          </div>
-
-          <div class="settings-row">
-            <div class="settings-label">背景色</div>
-            <div class="color-row">
-              <input type="color" id="bg-color-top" value="#87CEEB" title="空の色（上）">
-              <label for="bg-color-top">上</label>
-              <input type="color" id="bg-color-bottom" value="#dff0fd" title="空の色（下）">
-              <label for="bg-color-bottom">下</label>
-              <button class="reset-btn" id="reset-bg-btn">リセット</button>
-            </div>
-          </div>
-        </section>
-
-      </div><!-- /settings-body -->
-    </div><!-- /settings-panel -->
-  </div><!-- /settings-overlay -->
-
-  <!-- ====== Incoming Call Screen ====== -->
-  <div id="call-screen">
-    <button class="call-close-hint" id="call-screen-close" title="閉じる" aria-label="着信画面を閉じる">✕</button>
-    <div class="call-avatar" id="call-avatar">
-      <!-- JS で描画 -->
+    <!-- ====== Incoming Call Screen ====== -->
+    <div id="call-screen">
+      <button class="call-close-hint" id="call-screen-close" title="閉じる" aria-label="着信画面を閉じる">✕</button>
+      <div class="call-avatar" id="call-avatar">
+        <!-- JS で描画 -->
+      </div>
+      <div class="call-name" id="call-name">相手の名前</div>
+      <div class="call-status">LIME音声通話...</div>
+      <div class="call-actions">
+        <button class="call-action-btn call-decline" id="call-decline-btn">
+          <div class="call-action-circle">✕</div>
+          <span>拒否</span>
+        </button>
+        <button class="call-action-btn call-accept" id="call-accept-btn">
+          <div class="call-action-circle">📞</div>
+          <span>応答</span>
+        </button>
+      </div>
     </div>
-    <div class="call-name" id="call-name">相手の名前</div>
-    <div class="call-status">LINE音声通話...</div>
-    <div class="call-actions">
-      <button class="call-action-btn call-decline" id="call-decline-btn">
-        <div class="call-action-circle">✕</div>
-        <span>拒否</span>
-      </button>
-      <button class="call-action-btn call-accept" id="call-accept-btn">
-        <div class="call-action-circle">📞</div>
-        <span>応答</span>
-      </button>
-    </div>
-  </div>
 
-  <!-- ====== Toast ====== -->
-  <div id="toast" role="alert" aria-live="polite"></div>
+    <!-- ====== Toast ====== -->
+    <div id="toast" role="alert" aria-live="polite"></div>
 
-</div><!-- /app -->
+  </div><!-- /app -->
 
-<!-- ====== Image Cropper Modal ====== -->
-<div id="crop-modal">
-  <div class="crop-modal-content">
-    <div class="crop-header">アイコンの調整</div>
-    <div class="crop-area" id="crop-area">
-      <img id="crop-img" src="" alt="crop">
-      <div class="crop-overlay"></div>
-    </div>
-    <div class="crop-controls">
-      <span class="crop-icon">🔍-</span>
-      <input type="range" id="crop-zoom" min="0.5" max="3" step="0.01" value="1">
-      <span class="crop-icon">🔍+</span>
-    </div>
-    <div class="crop-actions">
-      <button class="crop-btn cancel" id="crop-cancel">キャンセル</button>
-      <button class="crop-btn apply" id="crop-apply">適用</button>
+  <!-- ====== Image Cropper Modal ====== -->
+  <div id="crop-modal">
+    <div class="crop-modal-content">
+      <div class="crop-header">アイコンの調整</div>
+      <div class="crop-area" id="crop-area">
+        <img id="crop-img" src="" alt="crop">
+        <div class="crop-overlay"></div>
+      </div>
+      <div class="crop-controls">
+        <span class="crop-icon">🔍-</span>
+        <input type="range" id="crop-zoom" min="0.5" max="3" step="0.01" value="1">
+        <span class="crop-icon">🔍+</span>
+      </div>
+      <div class="crop-actions">
+        <button class="crop-btn cancel" id="crop-cancel">キャンセル</button>
+        <button class="crop-btn apply" id="crop-apply">適用</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- html2canvas CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-  integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="app.js"></script>
+  <!-- html2canvas CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="app.js"></script>
 </body>
+
 </html>
