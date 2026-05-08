@@ -274,6 +274,17 @@ function renderMessage(msg) {
     bubble.textContent = msg.text;
   }
 
+  // Toggle read status by clicking the bubble (self messages only)
+  if (isSelf) {
+    bubble.title = 'タップで既読を切替';
+    bubble.addEventListener('click', (e) => {
+      e.stopPropagation();
+      msg.read = !msg.read;
+      timeWrap.querySelector('.msg-read').textContent = msg.read ? '既読' : '';
+      saveState();
+    });
+  }
+
   // Time + read receipt container
   const timeWrap = document.createElement('div');
   timeWrap.style.display = 'flex';
