@@ -796,7 +796,8 @@ html, body {
 }
 
 #app.capturing #input-bar,
-#app.capturing #action-bar {
+#app.capturing #action-bar,
+#app.capturing #toast {
   display: none !important;
 }
 

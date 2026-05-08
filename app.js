@@ -200,7 +200,7 @@ function addMessage(text, senderKey) {
     text: text.trim(),
     sender: senderKey,   // 'a' = self, 'b' = other
     time: state.msgTime,
-    read: false,
+    read: senderKey === 'a',
   };
   state.messages.push(msg);
   renderMessage(msg);
@@ -916,7 +916,7 @@ function addImageMessage(imageData, senderKey) {
     imageData,
     sender: senderKey,
     time: state.msgTime,
-    read: false,
+    read: senderKey === 'a',
   };
   state.messages.push(msg);
   renderMessage(msg);
