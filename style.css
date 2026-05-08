@@ -106,12 +106,12 @@ html, body {
 
 /* ===== Sky Background ===== */
 #chat-bg {
-  flex: 1;
-  min-height: 0;                        /* flex子要素の縮小を許可 */
-  overflow-y: scroll;                    /* scroll で iOS にスクロール可能と認識させる */
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;          /* スクロール伝播を防止 */
+  overscroll-behavior: contain;
   position: relative;
   background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
 }
@@ -448,21 +448,23 @@ html, body {
 #settings-body {
   flex: 1 1 0;
   min-height: 0;
-  overflow-y: scroll;                    /* scroll で iOS にスクロール可能と認識させる */
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   padding: 16px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: block;
 }
 
 .settings-section {
   border-radius: 12px;
   border: 1px solid #e8e8e8;
   overflow: hidden;
-  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+
+.settings-section:last-child {
+  margin-bottom: 0;
 }
 
 .settings-section-title {
@@ -781,6 +783,12 @@ html, body {
 }
 
 /* ===== Capture overlay (hides UI elements during PNG export) ===== */
+#app.capturing {
+  /* Fix html2canvas offset bug caused by transform/left:50% */
+  left: 0;
+  transform: none;
+}
+
 #app.capturing #chat-header,
 #app.capturing #input-bar,
 #app.capturing #action-bar {
