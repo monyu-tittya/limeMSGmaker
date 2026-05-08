@@ -24,17 +24,23 @@ html, body {
   height: 100%;
   font-family: var(--font-main);
   background: #e5ddd5;
-  overflow: hidden;
+  /* overflow: hidden は iOS Safari でタッチスクロールを
+     完全にブロックするため使用しない。
+     代わりに #app を position: fixed にして body スクロールを防ぐ */
 }
 
 /* ===== App Shell ===== */
 #app {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  /* position: fixed で body スクロールを自然に防ぐ（iOS対応） */
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
   max-width: 480px;
-  margin: 0 auto;
-  position: relative;
   overflow: hidden;
   box-shadow: 0 0 30px rgba(0,0,0,0.3);
 }
@@ -101,11 +107,13 @@ html, body {
 /* ===== Sky Background ===== */
 #chat-bg {
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;                        /* flex子要素の縮小を許可 */
+  overflow-y: scroll;                    /* scroll で iOS にスクロール可能と認識させる */
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;          /* スクロール伝播を防止 */
   position: relative;
   background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
-  -webkit-overflow-scrolling: touch;
 }
 
 
@@ -440,8 +448,9 @@ html, body {
 #settings-body {
   flex: 1 1 0;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: scroll;                    /* scroll で iOS にスクロール可能と認識させる */
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 16px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex;
@@ -815,8 +824,8 @@ html, body {
 @media (min-width: 480px) {
   #app {
     border-radius: 12px;
-    margin: 20px auto;
-    height: calc(100dvh - 40px);
+    top: 20px;
+    bottom: 20px;
   }
 }
 
