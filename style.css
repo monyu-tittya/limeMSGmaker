@@ -665,6 +665,48 @@ html, body {
   background: #fde8e8;
 }
 
+/* Image position controls */
+.img-pos-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 8px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eaeaea;
+}
+
+.pos-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pos-row span {
+  font-size: 11px;
+  color: #666;
+  width: 24px;
+}
+
+.pos-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  appearance: none;
+  outline: none;
+}
+
+.pos-row input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #6ECB63;
+  cursor: pointer;
+}
+
 /* Color input for background */
 .color-row {
   display: flex;

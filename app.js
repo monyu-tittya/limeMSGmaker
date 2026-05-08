@@ -14,6 +14,8 @@ const state = {
       iconChar: 'A',
       iconColor: '#4a90d9',
       iconImage: null,    // base64 string
+      iconImageX: 50,
+      iconImageY: 50,
     },
     b: {
       name: '相手',
@@ -21,6 +23,8 @@ const state = {
       iconChar: 'B',
       iconColor: '#e05c8a',
       iconImage: null,
+      iconImageX: 50,
+      iconImageY: 50,
     },
   },
   messages: [],
@@ -116,10 +120,11 @@ function makeTextAvatarEl(char, color, sizePx = 36) {
 /**
  * Build an <img> element from a base64 data URL.
  */
-function makeImgEl(dataUrl) {
+function makeImgEl(dataUrl, x = 50, y = 50) {
   const img = document.createElement('img');
   img.src = dataUrl;
   img.alt = 'アイコン';
+  img.style.objectPosition = `${x}% ${y}%`;
   return img;
 }
 
@@ -133,7 +138,7 @@ function renderIconInto(personKey, container, sizePx = 36) {
   const p = state.persons[personKey];
   container.innerHTML = '';
   if (p.iconMode === 'image' && p.iconImage) {
-    container.appendChild(makeImgEl(p.iconImage));
+    container.appendChild(makeImgEl(p.iconImage, p.iconImageX, p.iconImageY));
   } else {
     container.appendChild(makeTextAvatarEl(p.iconChar || '?', p.iconColor, sizePx));
   }
@@ -152,7 +157,7 @@ function renderSenderToggle() {
   DOM.senderToggle.innerHTML = '';
   const p = state.persons[personKey];
   if (p.iconMode === 'image' && p.iconImage) {
-    const img = makeImgEl(p.iconImage);
+    const img = makeImgEl(p.iconImage, p.iconImageX, p.iconImageY);
     img.style.borderRadius = '50%';
     DOM.senderToggle.appendChild(img);
   } else {
@@ -171,12 +176,14 @@ function renderSettingsPreview(personKey) {
 
   container.innerHTML = '';
   if (p.iconMode === 'image' && p.iconImage) {
-    const img = makeImgEl(p.iconImage);
+    const img = makeImgEl(p.iconImage, p.iconImageX, p.iconImageY);
     container.appendChild(img);
+    $(`img-pos-${personKey}`).style.display = 'flex';
   } else {
     const ta = makeTextAvatarEl(p.iconChar || '?', p.iconColor, 52);
     ta.style.fontSize = '22px';
     container.appendChild(ta);
+    $(`img-pos-${personKey}`).style.display = 'none';
   }
 }
 
@@ -484,6 +491,12 @@ function handleImageUpload(personKey, file) {
   const reader = new FileReader();
   reader.onload = (e) => {
     state.persons[personKey].iconImage = e.target.result;
+    // reset position
+    state.persons[personKey].iconImageX = 50;
+    state.persons[personKey].iconImageY = 50;
+    $(`pos-x-${personKey}`).value = 50;
+    $(`pos-y-${personKey}`).value = 50;
+
     renderSettingsPreview(personKey);
     renderHeader();
     renderSenderToggle();
@@ -800,6 +813,21 @@ function initEvents() {
     rerenderAllMessages();
     saveState();
   });
+
+  // --- Image position sliders ---
+  const updatePos = (personKey, axis, val) => {
+    state.persons[personKey][`iconImage${axis.toUpperCase()}`] = parseInt(val, 10);
+    renderSettingsPreview(personKey);
+    if (personKey === 'a') renderSenderToggle();
+    if (personKey === 'b') renderHeader();
+    rerenderAllMessages();
+    saveState();
+  };
+
+  $('pos-x-a').addEventListener('input', (e) => updatePos('a', 'x', e.target.value));
+  $('pos-y-a').addEventListener('input', (e) => updatePos('a', 'y', e.target.value));
+  $('pos-x-b').addEventListener('input', (e) => updatePos('b', 'x', e.target.value));
+  $('pos-y-b').addEventListener('input', (e) => updatePos('b', 'y', e.target.value));
 
   // --- Time input ---
   DOM.msgTimeInput.addEventListener('change', () => {
