@@ -347,31 +347,80 @@ function renderMessage(msg) {
 }
 
 function renderSystemMessage(msg) {
-  const row = document.createElement('div');
-  row.className = 'msg-row system';
-  row.setAttribute('data-msg-id', msg.id);
-
-  const sysMsg = document.createElement('div');
   const isMissed = msg.type === 'missed-call';
-  sysMsg.className = `system-msg ${isMissed ? 'missed-call' : 'voice-call'}`;
+  const personKey = 'b'; // Always shown as from the other person
+  const p = state.persons[personKey];
 
-  sysMsg.innerHTML = `
-    <span class="system-icon">${isMissed ? '📵' : '☎️'}</span>
-    <span class="system-text">${isMissed ? '不在着信' : '音声通話'}</span>
-    <span class="system-time">${msg.time}</span>
-  `;
+  // Row (same layout as 'other' messages - left aligned)
+  const row = document.createElement('div');
+  row.className = 'msg-row other';
+  row.setAttribute('data-msg-id', msg.id);
+  row.setAttribute('role', 'listitem');
 
+  // Avatar
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = 'msg-avatar';
+  renderIconInto(personKey, avatarDiv, 36);
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'msg-body';
+
+  // Content wrap (call card + time)
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-content-wrap';
+
+  // Call card (white rounded square with phone icon + label)
+  const callCard = document.createElement('div');
+  callCard.className = 'call-card';
+
+  // Phone icon SVG
+  const phoneSvg = document.createElement('div');
+  phoneSvg.className = 'call-card-icon';
+  phoneSvg.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.58 1 1 0 01-.25 1.01l-2.2 2.2z" fill="#888"/>
+  </svg>`;
+
+  const labelEl = document.createElement('div');
+  labelEl.className = 'call-card-label';
+  labelEl.textContent = isMissed ? '不在着信' : 'キャンセル';
+
+  callCard.appendChild(phoneSvg);
+  callCard.appendChild(labelEl);
+
+  // Time
+  const timeWrap = document.createElement('div');
+  timeWrap.style.display = 'flex';
+  timeWrap.style.flexDirection = 'column';
+  timeWrap.style.alignItems = 'flex-start';
+  timeWrap.style.gap = '1px';
+
+  const timeEl = document.createElement('div');
+  timeEl.className = 'msg-time';
+  timeEl.textContent = msg.time;
+  timeWrap.appendChild(timeEl);
+
+  // Delete button
   const delBtn = document.createElement('button');
   delBtn.className = 'msg-delete-btn';
   delBtn.title = '削除';
+  delBtn.setAttribute('aria-label', 'メッセージを削除');
   delBtn.textContent = '✕';
   delBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     deleteMessage(msg.id);
   });
 
-  row.appendChild(sysMsg);
-  row.appendChild(delBtn);
+  wrap.appendChild(callCard);
+  wrap.appendChild(timeWrap);
+  wrap.appendChild(delBtn);
+
+  body.appendChild(wrap);
+
+  // Assemble row
+  row.appendChild(avatarDiv);
+  row.appendChild(body);
+
   DOM.messageList.appendChild(row);
 }
 
