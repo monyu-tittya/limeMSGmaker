@@ -502,7 +502,17 @@ const Cropper = {
   
   init() {
     this.zoomSlider.addEventListener('input', (e) => {
-      this.scale = parseFloat(e.target.value);
+      const newScale = parseFloat(e.target.value);
+      
+      const cropArea = $('crop-area');
+      const centerX = cropArea.offsetWidth / 2;
+      const centerY = cropArea.offsetHeight / 2;
+
+      const ratio = newScale / this.scale;
+      this.posX = centerX - (centerX - this.posX) * ratio;
+      this.posY = centerY - (centerY - this.posY) * ratio;
+      
+      this.scale = newScale;
       this.updateTransform();
     });
 
@@ -564,7 +574,7 @@ const Cropper = {
 
       // Calculate initial scale to cover the 200x200 area
       const minScale = Math.max(areaSize / this.img.naturalWidth, areaSize / this.img.naturalHeight);
-      this.scale = Math.max(1, minScale);
+      this.scale = minScale;
       this.zoomSlider.min = minScale * 0.5;
       this.zoomSlider.max = minScale * 4;
       this.zoomSlider.value = this.scale;
